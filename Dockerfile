@@ -32,7 +32,7 @@ COPY start-container /usr/local/bin/start-container
 
 ENTRYPOINT ["start-container"]
 
-# COPY --chown=www-data:www-data . /var/www/html
+# COPY --chown=www-data:www-data --chmod=0755 . /var/www/html
 
 # RUN composer install --optimize-autoloader --no-dev
 # RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
