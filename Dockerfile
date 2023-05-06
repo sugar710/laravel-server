@@ -1,4 +1,4 @@
-FROM php:8.1.9-fpm-alpine
+FROM php:8.1.14-fpm-alpine
 
 # 更新系统源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
@@ -18,7 +18,7 @@ RUN docker-php-ext-install bcmath \
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
 
 # 配置composer
-COPY composer.phar /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # 配置Nginx
