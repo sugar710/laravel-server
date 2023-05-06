@@ -1,4 +1,6 @@
-FROM php:8.1.14-fpm-alpine
+FROM php:8.1.18-fpm-alpine
+
+MAINTAINER 冯毅 <hxtgirq710@gmail.com>
 
 # 更新系统源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
