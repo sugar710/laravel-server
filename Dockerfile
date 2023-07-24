@@ -5,9 +5,11 @@ RUN apk add --no-cache --virtual .build-deps autoconf gcc g++ make libffi-dev op
 
 RUN apk add --no-cache libjpeg-turbo-dev libpng-dev libwebp-dev freetype-dev libzip-dev
 
-RUN pecl install swoole redis && docker-php-ext-install gd zip pdo_mysql bcmath
-RUN docker-php-ext-install pcntl
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
+RUN pecl install swoole redis && docker-php-ext-install gd zip pdo_mysql bcmath pcntl sockets
+
+# RUN docker-php-ext-install sockets && docker-php-ext-enable sockets
 
 # 运行环境
 FROM php:8.1.20-fpm-alpine
@@ -28,11 +30,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # 复制各扩展库
-COPY --from=builder ${EXT_PATH}/swoole.so ${EXT_PATH}/redis.so ${EXT_PATH}/gd.so ${EXT_PATH}/zip.so ${EXT_PATH}/pdo_mysql.so ${EXT_PATH}/bcmath.so ${EXT_PATH}/pcntl.so ${EXT_PATH}/
+COPY --from=builder ${EXT_PATH}/swoole.so ${EXT_PATH}/redis.so ${EXT_PATH}/gd.so ${EXT_PATH}/zip.so ${EXT_PATH}/pdo_mysql.so ${EXT_PATH}/bcmath.so ${EXT_PATH}/pcntl.so ${EXT_PATH}/sockets.so ${EXT_PATH}/
 
 # 启用PHP扩展
-RUN docker-php-ext-enable swoole redis gd zip pdo_mysql bcmath opcache pcntl
-# && rm -rf /var/cache/apk/* && rm -rf /tmp/*
+RUN docker-php-ext-enable swoole redis gd zip pdo_mysql bcmath opcache pcntl sockets
 
 # 复制PHP配置
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
